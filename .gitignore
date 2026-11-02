@@ -1,0 +1,10 @@
+/vendor/
+/node_modules/
+/.phpunit.cache/
+/.phpunit.result.cache
+/.phpunit-watcher.yml
+/.idea/
+/.vscode/
+/auth.json
+.phpunit.cache
+/composer.lock
