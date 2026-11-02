@@ -1,3 +1,5 @@
+<p align="center"><img src="https://res.cloudinary.com/fayne/image/upload/v1787643269/fayne_logo.png" width="300"></p>
+
 # Laravel Filament Promotion
 
 A Laravel package for managing promotion rules in Filament and calculating discounts in application code.
