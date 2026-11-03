@@ -1,8 +1,16 @@
 <?php
 
-putenv('COMPOSER_VENDOR_DIR=' . dirname(__DIR__) . '/vendor');
-$_ENV['COMPOSER_VENDOR_DIR'] = dirname(__DIR__) . '/vendor';
+declare(strict_types=1);
 
-$loader = require dirname(__DIR__, 3) . '/vendor/autoload.php';
+$packageRoot = dirname(__DIR__);
+$autoload = $packageRoot . '/vendor/autoload.php';
+if (! is_file($autoload)) {
+    $autoload = dirname($packageRoot, 2) . '/vendor/autoload.php';
+}
+if (! is_file($autoload)) {
+    throw new RuntimeException('Install the package dependencies with Composer before running tests.');
+}
 
-$loader->addPsr4('Fayne\\Promotion\\', dirname(__DIR__) . '/src');
+$loader = require $autoload;
+$loader->addPsr4('Fayne\\Promotion\\', $packageRoot . '/src', true);
+$loader->addPsr4('Fayne\\Promotion\\Tests\\', $packageRoot . '/tests', true);

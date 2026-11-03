@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 use Illuminate\Support\Facades\Schema;
-use Tests\TestCase;
+use Fayne\Promotion\Tests\TestCase;
 
 uses(TestCase::class);
 test('package migrations create promotion and coupon tables', function (): void {
@@ -20,14 +20,32 @@ test('models persist uuids and casts', function (): void {
     (require dirname(__DIR__, 2) . '/database/migrations/2026_11_02_000002_create_coupons_table.php')->up();
 
     $promotion = \Fayne\Promotion\Models\Promotion::query()->create([
-        'name' => 'Welcome', 'type' => \Fayne\Promotion\Enums\PromotionType::AUTO,
+        'tenant_id' => 99, 'name' => 'Welcome', 'type' => \Fayne\Promotion\Enums\PromotionType::AUTO,
         'conditions' => [], 'actions' => [], 'is_active' => true,
     ]);
-    $coupon = $promotion->coupons()->create(['code' => 'WELCOME', 'used_count' => 0]);
+    $couponPromotion = \Fayne\Promotion\Models\Promotion::query()->create([
+        'name' => 'Coupon promotion', 'type' => \Fayne\Promotion\Enums\PromotionType::COUPON,
+        'conditions' => [], 'actions' => [['type' => 'free_shipping', 'config' => []]],
+    ]);
+    $coupon = $couponPromotion->coupons()->create(['tenant_id' => 99, 'code' => 'WELCOME', 'used_count' => 0]);
 
     expect($promotion->id)->toBeString()
         ->and($promotion->is_active)->toBeTrue()
         ->and($promotion->type)->toBe(\Fayne\Promotion\Enums\PromotionType::AUTO)
         ->and($coupon->id)->toBeString()
-        ->and($coupon->used_count)->toBe(0);
+        ->and($promotion->tenant_id)->toBe(0)
+        ->and($promotion->currency)->toBe('CNY')
+        ->and($coupon->tenant_id)->toBe(0)
+        ->and($coupon->currency)->toBe('CNY')
+        ->and($coupon->fresh()->used_count)->toBe(0);
+});
+
+test('tenant context is shared within a scope and cleared for the next scope', function (): void {
+    config(['filament-cms.tenancy.enabled' => true]);
+    \Illuminate\Support\Facades\Context::add('filament-cms.tenant_id', 7);
+    expect(app(\Fayne\Promotion\Services\TenantContext::class)->tenantId())->toBe(7);
+
+    \Illuminate\Support\Facades\Context::forget('filament-cms.tenant_id');
+    expect(fn () => app(\Fayne\Promotion\Services\TenantContext::class)->tenantId())
+        ->toThrow(\Illuminate\Validation\ValidationException::class);
 });
