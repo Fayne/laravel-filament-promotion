@@ -23,8 +23,10 @@ Manage promotion rules and coupon codes in Filament, preview cart discounts, and
 
 ```bash
 composer require fayne/laravel-filament-promotion
-php artisan migrate
+php artisan ec:promotion:install
 ```
+
+The installer runs pending host migrations and offers to create a disabled 10% demo promotion and coupon. Use `--demo` to opt in directly and `--tenant=ID-or-slug` to target a tenant. Use `--no-interaction` for installation without demo data. Production requires confirmation or `--force`.
 
 Register the plugin in the Filament panel that should manage promotions:
 

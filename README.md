@@ -23,8 +23,10 @@ Laravel 促销规则与优惠券管理包，提供 Filament 后台、优惠计�
 
 ```bash
 composer require fayne/laravel-filament-promotion
-php artisan migrate
+php artisan ec:promotion:install
 ```
+
+安装命令会运行宿主的待执行迁移，并询问是否创建默认停用的 9 折演示促销和优惠券。使用 `--demo` 跳过询问，多租户可加 `--tenant=租户ID或slug`。自动化安装且不创建演示数据时使用 `--no-interaction`；生产环境需要确认，可用 `--force`。
 
 在需要管理促销的 Filament PanelProvider 中注册插件：
 

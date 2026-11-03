@@ -36,6 +36,7 @@ final class PromotionServiceProvider extends ServiceProvider
         Gate::policy(Promotion::class, PromotionPolicy::class);
         Gate::policy(Coupon::class, CouponPolicy::class);
         if ($this->app->runningInConsole()) {
+            $this->commands([\Fayne\Promotion\Console\InstallCommand::class]);
             $this->publishes([__DIR__ . '/../config/promotion.php' => config_path('promotion.php')], 'promotion-config');
         }
     }
