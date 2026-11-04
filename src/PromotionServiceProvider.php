@@ -28,6 +28,7 @@ final class PromotionServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        $this->publishes([__DIR__ . '/../database/migrations' => database_path('migrations')], 'promotion-migrations');
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
         $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'promotion');
         $this->callAfterResolving(\Fayne\CMS\Support\Authorization\PermissionRegistry::class, function ($registry): void {

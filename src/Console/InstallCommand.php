@@ -28,7 +28,7 @@ final class InstallCommand extends Command
         if (! $this->confirmToProceed()) {
             return self::FAILURE;
         }
-        if ($this->call('vendor:publish', ['--tag' => 'promotion-config', '--no-interaction' => true]) !== self::SUCCESS) {
+        if ($this->call('vendor:publish', ['--tag' => ['promotion-config', 'promotion-migrations'], '--no-interaction' => true]) !== self::SUCCESS) {
             return self::FAILURE;
         }
 
