@@ -28,6 +28,9 @@ final class InstallCommand extends Command
         if (! $this->confirmToProceed()) {
             return self::FAILURE;
         }
+        if ($this->call('vendor:publish', ['--tag' => 'promotion-config', '--no-interaction' => true]) !== self::SUCCESS) {
+            return self::FAILURE;
+        }
 
         $demo = $this->option('demo') || ($this->input->isInteractive() && $this->confirm('Create disabled demo data?', false));
         $target = $this->option('tenant');

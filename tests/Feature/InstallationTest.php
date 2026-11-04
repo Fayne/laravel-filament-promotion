@@ -49,3 +49,23 @@ test('tenant context is shared within a scope and cleared for the next scope', f
     expect(fn () => app(\Fayne\Promotion\Services\TenantContext::class)->tenantId())
         ->toThrow(\Illuminate\Validation\ValidationException::class);
 });
+
+test('installer publishes missing config and preserves host settings', function (): void {
+    $directory = sys_get_temp_dir() . '/promotion-config-' . bin2hex(random_bytes(6));
+    mkdir($directory);
+    $original = app()->configPath();
+    app()->useConfigPath($directory);
+    try {
+        (new ReflectionMethod(\Illuminate\Support\ServiceProvider::class, 'publishes'))->invoke(app()->getProvider(\Fayne\Promotion\PromotionServiceProvider::class), [
+            dirname(__DIR__, 2) . '/config/promotion.php' => $directory . '/promotion.php',
+        ], 'promotion-config');
+        $this->artisan('ec:promotion:install', ['--no-interaction' => true])->assertSuccessful();
+        expect(is_file($directory . '/promotion.php'))->toBeTrue();
+        file_put_contents($directory . '/promotion.php', '<?php return ["host_setting" => true];');
+        $this->artisan('ec:promotion:install', ['--no-interaction' => true])->assertSuccessful();
+        expect(require $directory . '/promotion.php')->toBe(['host_setting' => true]);
+    } finally {
+        app()->useConfigPath($original);
+        \Illuminate\Support\Facades\File::deleteDirectory($directory);
+    }
+});
