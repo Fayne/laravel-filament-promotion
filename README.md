@@ -146,3 +146,6 @@ MySQL 行锁并发验收由宿主仓库 GitHub Actions 的 `laravel-filament-pro
 ## 许可证
 
 本软件为专有软件，使用和分发需获得版权持有人授权。详见 [LICENSE.md](LICENSE.md)。
+
+
+Permission labels and groups are declared by this package in `resources/permissions.php`, with English and Simplified Chinese translations in `resources/lang`. CMS Core resolves the registered metadata without business-name matching.

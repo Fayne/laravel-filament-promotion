@@ -1,5 +1,3 @@
 <?php
 
-return [
-    'resources' => ['Promotion', 'Coupon'],
-];
+return ['resources' => ['Promotion', 'Coupon'], 'resource_actions' => ['Promotion' => ['viewAny', 'view', 'create', 'update', 'delete', 'destroy', 'restore', 'forceDelete', 'replicate'], 'Coupon' => ['viewAny', 'view', 'create', 'update', 'delete', 'destroy', 'restore', 'forceDelete', 'replicate']], 'groups' => ['promotion' => ['label' => 'promotion::permissions.groups.promotion'], 'coupon' => ['label' => 'promotion::permissions.groups.coupon']], 'resource_labels' => ['Promotion' => 'promotion::permissions.resources.promotion', 'Coupon' => 'promotion::permissions.resources.coupon'], 'resource_groups' => ['Promotion' => 'promotion', 'Coupon' => 'coupon'], 'display' => []];
