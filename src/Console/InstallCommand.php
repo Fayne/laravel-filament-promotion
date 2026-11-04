@@ -28,8 +28,10 @@ final class InstallCommand extends Command
         if (! $this->confirmToProceed()) {
             return self::FAILURE;
         }
-        if ($this->call('vendor:publish', ['--tag' => ['promotion-config', 'promotion-migrations'], '--no-interaction' => true]) !== self::SUCCESS) {
-            return self::FAILURE;
+        if (! (app()->bound(\Fayne\CMS\Support\InstallationContext::class) && app(\Fayne\CMS\Support\InstallationContext::class)->prepared)) {
+            if ($this->call('vendor:publish', ['--tag' => ['promotion-config', 'promotion-migrations'], '--no-interaction' => true]) !== self::SUCCESS) {
+                return self::FAILURE;
+            }
         }
 
         $demo = $this->option('demo') || ($this->input->isInteractive() && $this->confirm('Create disabled demo data?', false));
@@ -56,9 +58,11 @@ final class InstallCommand extends Command
             }
         }
 
-        $status = $this->call('migrate', ['--force' => true]);
-        if ($status !== self::SUCCESS) {
-            return $status;
+        if (! (app()->bound(\Fayne\CMS\Support\InstallationContext::class) && app(\Fayne\CMS\Support\InstallationContext::class)->prepared)) {
+            $status = $this->call('migrate', ['--force' => true]);
+            if ($status !== self::SUCCESS) {
+                return $status;
+            }
         }
 
         if ($demo) {

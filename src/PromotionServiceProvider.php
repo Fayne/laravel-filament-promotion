@@ -28,7 +28,7 @@ final class PromotionServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $this->publishes([__DIR__ . '/../database/migrations' => database_path('migrations')], 'promotion-migrations');
+        $this->publishes([__DIR__ . '/../database/migrations' => database_path('migrations')], ['promotion-migrations', 'cms-module-assets']);
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
         $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'promotion');
         $this->callAfterResolving(\Fayne\CMS\Support\Authorization\PermissionRegistry::class, function ($registry): void {
@@ -38,7 +38,7 @@ final class PromotionServiceProvider extends ServiceProvider
         Gate::policy(Coupon::class, CouponPolicy::class);
         if ($this->app->runningInConsole()) {
             $this->commands([\Fayne\Promotion\Console\InstallCommand::class]);
-            $this->publishes([__DIR__ . '/../config/promotion.php' => config_path('promotion.php')], 'promotion-config');
+            $this->publishes([__DIR__ . '/../config/promotion.php' => config_path('promotion.php')], ['promotion-config', 'cms-module-assets']);
         }
     }
 }
